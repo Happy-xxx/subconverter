@@ -297,6 +297,9 @@ jobs:
         uses: szenius/set-timezone@v1.2
         with:
           timezoneMacos: "Asia/Shanghai"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - uses: actions/checkout@v3.5.3
       - name: Add commit id into version
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -342,6 +345,9 @@ jobs:
         uses: szenius/set-timezone@v1.2
         with:
           timezoneWindows: "Asia/Shanghai"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - uses: actions/checkout@v3.5.3
       - uses: actions/setup-node@v3.6.0
         with:
@@ -396,6 +402,9 @@ jobs:
         uses: szenius/set-timezone@v1.2
         with:
           timezoneWindows: "Asia/Shanghai"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - uses: actions/checkout@v3.5.3
       - uses: actions/setup-node@v3.6.0
         with:
