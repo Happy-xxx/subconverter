@@ -157,6 +157,11 @@ bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &
 
 void processRemark(std::string &oldremark, std::string &newremark, string_array &remarks_list, bool proc_comma = true)
 {
+    // Replace every '=' with '-' in the remark string to avoid parse errors from the clients.
+    //     Surge is tested to yield an error when handling '=' in the remark string, 
+    //     not sure if other clients have the same problem.
+    std::replace(oldremark.begin(), oldremark.end(), '=', '-');
+
     if(proc_comma)
     {
         if(oldremark.find(',') != std::string::npos)
@@ -443,7 +448,9 @@ void proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGr
             continue;
         }
 
-        if(udp)
+        // UDP is not supported yet in clash using snell
+        // sees in https://dreamacro.github.io/clash/configuration/outbound.html#snell
+        if(udp && x.Type != ProxyType::Snell)
             singleproxy["udp"] = true;
         if(block)
             singleproxy.SetStyle(YAML::EmitterStyle::Block);
@@ -754,9 +761,11 @@ std::string proxyToSurge(std::vector<Proxy> &nodes, const std::string &base_conf
         case ProxyType::Snell:
             proxy = "snell, " + hostname + ", " + port + ", psk=" + password;
             if(!obfs.empty())
+            {
                 proxy += ", obfs=" + obfs;
                 if(!host.empty())
                     proxy += ", obfs-host=" + host;
+            }
             break;
         default:
             continue;
@@ -1482,6 +1491,12 @@ void proxyToQuanX(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Ruleset
         std::string proxies = join(filtered_nodelist, ", ");
 
         std::string singlegroup = type + "=" + x.Name + ", " + proxies;
+        if(type != "static")
+        {
+            singlegroup += ", check-interval=" + std::to_string(x.Interval);
+            if(x.Tolerance > 0)
+                singlegroup += ", tolerance=" + std::to_string(x.Tolerance);
+        }
         ini.set("{NONAME}", singlegroup);
     }
 
@@ -1894,10 +1909,22 @@ std::string proxyToLoon(std::vector<Proxy> &nodes, const std::string &base_conf,
             group += "," + y;
         */
         group += join(filtered_nodelist, ",");
-        if(x.Type != ProxyGroupType::Select) {
+        if(x.Type != ProxyGroupType::Select)
+        {
             group += ",url=" + x.Url + ",interval=" + std::to_string(x.Interval);
-            if (x.Type == ProxyGroupType::LoadBalance)
-                group += ",strategy=" + std::string(x.Strategy == BalanceStrategy::RoundRobin ? "round-robin" : "pcc");
+            if(x.Type == ProxyGroupType::LoadBalance)
+            {
+                group += ",algorithm=" + std::string(x.Strategy == BalanceStrategy::RoundRobin ? "round-robin" : "pcc");
+                if(x.Timeout > 0)
+                    group += ",max-timeout=" + std::to_string(x.Timeout);
+            }
+            if(x.Type == ProxyGroupType::URLTest)
+            {
+                if(x.Tolerance > 0)
+                    group += ",tolerance=" + std::to_string(x.Tolerance);
+            }
+            if(x.Type == ProxyGroupType::Fallback)
+                group += ",max-timeout=" + std::to_string(x.Timeout);
         }
 
         ini.set("{NONAME}", x.Name + " = " + group); //insert order
