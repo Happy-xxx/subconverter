@@ -1768,6 +1768,7 @@ std::string proxyToLoon(std::vector<Proxy> &nodes, const std::string &base_conf,
     string_array remarks_list;
 
     ini.store_any_line = true;
+    ini.add_direct_save_section("Plugin");
     if(ini.parse(base_conf) != INIREADER_EXCEPTION_NONE && !ext.nodelist)
     {
         writeLog(0, "Loon base loader failed with error: " + ini.get_last_error(), LOG_LEVEL_ERROR);
@@ -1848,6 +1849,19 @@ std::string proxyToLoon(std::vector<Proxy> &nodes, const std::string &base_conf,
                 proxy += ",tls-name=" + host;
             if(!scv.is_undef())
                 proxy += ",skip-cert-verify=" + std::string(scv.get() ? "true" : "false");
+            break;
+        case ProxyType::SOCKS5:
+            proxy = "socks5," + hostname + "," + port;
+            if (!username.empty() && !password.empty())
+                proxy += "," + username + ",\"" + password + "\"";
+            proxy += ",over-tls=" + std::string(tlssecure ? "true" : "false");
+            if (tlssecure)
+            {
+                if(!host.empty())
+                    proxy += ",tls-name=" + host;
+                if(!scv.is_undef())
+                    proxy += ",skip-cert-verify=" + std::string(scv.get() ? "true" : "false");
+            }
             break;
         default:
             continue;
