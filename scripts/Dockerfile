@@ -3,7 +3,7 @@ FROM alpine:latest
 LABEL maintainer "firefly.lzh@gmail.com"
 ADD https://github.com/LM-Firefly/subconverter/commits/main.atom cache_bust
 ARG THREADS="4"
-ARG SHA=""
+# ARG SHA=""
 
 # build minimized
 WORKDIR /
