@@ -1,4 +1,4 @@
-FROM alpine:latest AS builder
+FROM alpine:3.16 AS builder
 # FROM fireflylzh/subconverter:latest
 LABEL maintainer "firefly.lzh@gmail.com"
 # ADD https://github.com/LM-Firefly/subconverter/commits/main.atom cache_bust
@@ -49,7 +49,7 @@ RUN set -xe && \
     make -j $THREADS
 
 # build final image
-FROM alpine:latest
+FROM alpine:3.16
 LABEL maintainer "firefly.lzh@gmail.com"
 
 RUN apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp libevent
