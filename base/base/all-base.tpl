@@ -556,3 +556,33 @@ test-timeout = 5
 }
 
 {% endif %}
+{% if request.target == "singbox" %}
+
+{
+  "log": {
+    "disabled": false,
+    "level": "info",
+    "output": "box.log",
+    "timestamp": true
+  },
+  "dns": {},
+  "ntp": {
+    "enabled": false,
+    "server": "time.apple.com",
+    "server_port": 123,
+    "interval": "30m"
+  },
+  "inbounds": [
+    {
+      "type": "socks",
+      "tag": "socks-in",
+      "listen": "127.0.0.1",
+      "listen_port": 2080
+    }
+  ],
+  "outbounds": [],
+  "route": {},
+  "experimental": {}
+}
+
+{% endif %}
