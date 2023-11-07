@@ -59,7 +59,5 @@ COPY --from=builder /subconverter/base /base/
 
 # set entry
 WORKDIR /base
-EXPOSE 25500
-CMD subconverter
-
 EXPOSE 25500/tcp
+CMD subconverter
