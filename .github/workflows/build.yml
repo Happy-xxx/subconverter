@@ -202,7 +202,7 @@ jobs:
   armv7_build:
     needs: prepare
     name: Linux armv7 Build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, ARM]
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
@@ -307,7 +307,7 @@ jobs:
           timezoneMacos: "Asia/Shanghai"
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - uses: actions/checkout@v3.5.3
       - name: Add commit id into version
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -357,7 +357,7 @@ jobs:
           timezoneWindows: "Asia/Shanghai"
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - uses: actions/checkout@v3.5.3
       - uses: actions/setup-node@v3.6.0
         with:
@@ -416,7 +416,7 @@ jobs:
           timezoneWindows: "Asia/Shanghai"
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - uses: actions/checkout@v3.5.3
       - uses: actions/setup-node@v3.6.0
         with:
