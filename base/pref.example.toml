@@ -144,6 +144,9 @@ clash_use_new_field_name = true
 #         key: value
 clash_proxies_style = "block"
 
+# add Clash mode to sing-box rules, and add a GLOBAL group to end of outbounds
+singbox_add_clash_modes = true
+
 [[node_pref.rename_node]]
 match = "(解锁|)(\\|)(x.*)(\\|V2ray)"
 replace = "$[$3]"
@@ -2384,6 +2387,14 @@ value = "0.0.0.0:19090"
 [[template.globals]]
 key = "clash.routing_mark"
 value = "16666"
+
+[[template.globals]]
+key = "singbox.allow_lan"
+value = "true"
+
+[[template.globals]]
+key = "singbox.mixed_port"
+value = "2080"
 
 [[aliases]]
 uri = "/clash"
