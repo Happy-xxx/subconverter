@@ -202,7 +202,7 @@ jobs:
   armv7_build:
     needs: prepare
     name: Linux armv7 Build
-    runs-on: [self-hosted, linux, ARM]
+    runs-on: ubuntu-latest
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}

@@ -144,7 +144,7 @@ jobs:
 
   armv7_build:
     name: Build ARMv7 Image
-    runs-on: [self-hosted, linux, ARM]
+    runs-on: ubuntu-latest
     outputs:
       ver: ${{ steps.set-ver.outputs.sha_short }}
     steps:
