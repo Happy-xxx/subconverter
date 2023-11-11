@@ -15,6 +15,7 @@ string_array Surge2RuleTypes = {basic_types, "IP-CIDR6", "USER-AGENT", "URL-REGE
 string_array SurgeRuleTypes = {basic_types, "IP-CIDR6", "USER-AGENT", "URL-REGEX", "AND", "OR", "NOT", "PROCESS-NAME", "IN-PORT", "DEST-PORT", "SRC-IP"};
 string_array QuanXRuleTypes = {basic_types, "USER-AGENT", "HOST", "HOST-SUFFIX", "HOST-KEYWORD"};
 string_array SurfRuleTypes = {basic_types, "IP-CIDR6", "PROCESS-NAME", "IN-PORT", "DEST-PORT", "SRC-IP"};
+string_array SingBoxRuleTypes = {basic_types, "IP-VERSION", "INBOUND", "PROTOCOL", "NETWORK", "GEOSITE", "SRC-GEOIP", "DOMAIN-REGEX", "PROCESS-NAME", "PROCESS-PATH", "PACKAGE-NAME", "PORT", "PORT-RANGE", "SRC-PORT", "SRC-PORT-RANGE", "USER", "USER-ID"};
 
 std::string convertRuleset(const std::string &content, int type)
 {
@@ -469,6 +470,7 @@ static rapidjson::Value transformRuleToSingBox(const std::string& rule, const st
     rapidjson::Value rule_obj(rapidjson::kObjectType);
     type = replaceAllDistinct(type, "-", "_");
     type = replaceAllDistinct(type, "ip_cidr6", "ip_cidr");
+    type = replaceAllDistinct(type, "src_", "source_");
     if (type == "match" || type == "final")
     {
         rule_obj.AddMember("outbound", rapidjson::Value(value.data(), value.size(), allocator), allocator);
@@ -479,6 +481,22 @@ static rapidjson::Value transformRuleToSingBox(const std::string& rule, const st
         rule_obj.AddMember("outbound", rapidjson::Value(group.c_str(), allocator), allocator);
     }
     return rule_obj;
+}
+
+static void appendSingBoxRule(rapidjson::Value &rules, const std::string& rule, rapidjson::MemoryPoolAllocator<>& allocator)
+{
+    using namespace rapidjson_ext;
+    auto args = split(rule, ",");
+    if (args.size() < 2) return;
+    auto type = toLower(std::string(args[0]));
+    auto value = toLower(args[1]);
+//    std::string_view option;
+//    if (args.size() >= 3) option = args[2];
+
+    type = replaceAllDistinct(type, "-", "_");
+    type = replaceAllDistinct(type, "ip_cidr6", "ip_cidr");
+
+    rules | AppendToArray(type.c_str(), rapidjson::Value(value.c_str(), allocator), allocator);
 }
 
 void rulesetToSingBox(rapidjson::Document &base_rule, std::vector<RulesetContent> &ruleset_content_array, bool overwrite_original_rules)
@@ -503,6 +521,9 @@ void rulesetToSingBox(rapidjson::Document &base_rule, std::vector<RulesetContent
         rules.PushBack(global_object, allocator);
         rules.PushBack(direct_object, allocator);
     }
+
+    auto dns_object = buildObject(allocator, "protocol", "dns", "outbound", "dns-out");
+    rules.PushBack(dns_object, allocator);
 
     for(RulesetContent &x : ruleset_content_array)
     {
@@ -532,7 +553,10 @@ void rulesetToSingBox(rapidjson::Document &base_rule, std::vector<RulesetContent
 
         strStrm.clear();
         strStrm<<retrieved_rules;
+
         std::string::size_type lineSize;
+        rapidjson::Value rule(rapidjson::kObjectType);
+
         while(getline(strStrm, strLine, delimiter))
         {
             if(global.maxAllowedRules && total_rules > global.maxAllowedRules)
@@ -541,15 +565,18 @@ void rulesetToSingBox(rapidjson::Document &base_rule, std::vector<RulesetContent
             lineSize = strLine.size();
             if(!lineSize || strLine[0] == ';' || strLine[0] == '#' || (lineSize >= 2 && strLine[0] == '/' && strLine[1] == '/')) //empty lines and comments are ignored
                 continue;
-            if(std::none_of(ClashRuleTypes.begin(), ClashRuleTypes.end(), [strLine](const std::string& type){return startsWith(strLine, type);}))
+            if(std::none_of(SingBoxRuleTypes.begin(), SingBoxRuleTypes.end(), [strLine](const std::string& type){return startsWith(strLine, type);}))
                 continue;
             if(strFind(strLine, "//"))
             {
                 strLine.erase(strLine.find("//"));
                 strLine = trimWhitespace(strLine);
             }
-            rules.PushBack(transformRuleToSingBox(strLine, rule_group, allocator), allocator);
+            appendSingBoxRule(rule, strLine, allocator);
         }
+        if (rule.ObjectEmpty()) continue;
+        rule.AddMember("outbound", rapidjson::Value(rule_group.c_str(), allocator), allocator);
+        rules.PushBack(rule, allocator);
     }
 
     if (!base_rule.HasMember("route"))
