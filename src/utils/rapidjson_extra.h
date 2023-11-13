@@ -93,16 +93,6 @@ namespace rapidjson_ext {
         {
             return (*this)(root);
         };
-
-        friend ReturnType operator| (rapidjson::Value &root, const ExtensionFunction<ReturnType> &func)
-        {
-            return func(root);
-        }
-
-        friend ReturnType operator| (rapidjson::Value &&root, const ExtensionFunction<ReturnType> &func)
-        {
-            return func(root);
-        }
     };
 
     struct AddMemberOrReplace : public ExtensionFunction<rapidjson::Value &> {
@@ -175,6 +165,18 @@ namespace rapidjson_ext {
             return buffer.GetString();
         }
     };
+
+    template <typename ReturnType>
+    inline ReturnType operator| (rapidjson::Value &root, const ExtensionFunction<ReturnType> &func)
+    {
+        return func(root);
+    }
+
+    template <typename ReturnType>
+    inline ReturnType operator| (rapidjson::Value &&root, const ExtensionFunction<ReturnType> &func)
+    {
+        return func(root);
+    }
 }
 
 
