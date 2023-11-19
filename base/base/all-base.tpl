@@ -568,7 +568,7 @@ test-timeout = 5
         "servers": [
             {
                 "tag": "dns_proxy",
-                "address": "https://cloudflare-dns.com/dns-query",
+                "address": "tls://cloudflare-dns.com/dns-query",
                 "address_resolver": "dns_resolver"
             },
             {
@@ -653,7 +653,7 @@ test-timeout = 5
         {
             "type": "tun",
             "tag": "tun-in",
-            "inet4_address": "22.0.0.1\/30",
+            "inet4_address": "22.0.0.1/30",
             {% if default(request.singbox.ipv6, "") == "1" %}
             "inet6_address": "fdfe:dcba:9876::1/126",
             {% endif %}
