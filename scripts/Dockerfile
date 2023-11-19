@@ -1,4 +1,4 @@
-FROM alpine:3.16 AS builder
+FROM alpine:3.18
 # FROM fireflylzh/subconverter:latest
 LABEL maintainer="firefly.lzh@gmail.com"
 # ADD https://github.com/LM-Firefly/subconverter/commits/main.atom cache_bust
@@ -46,16 +46,23 @@ RUN set -xe && \
     python3 -m pip install gitpython && \
     python3 scripts/update_rules.py -c scripts/rules_config.conf && \
     cmake -DCMAKE_BUILD_TYPE=Release . && \
-    make -j $THREADS
+    make -j $THREADS && \
+    mv subconverter /usr/bin && \
+    mv base ../ && \
+    cd .. && \
+    rm -rf subconverter quickjspp libcron toml11 /usr/lib/lib*.a /usr/include/* /usr/local/include/lib*.a /usr/local/include/* && \
+    apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp libevent && \
+    apk del .build-tools .build-deps
+
 
 # build final image
-FROM alpine:3.16
-LABEL maintainer="firefly.lzh@gmail.com"
-
-RUN apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp
-
-COPY --from=builder /subconverter/subconverter /usr/bin/
-COPY --from=builder /subconverter/base /base/
+#FROM alpine:latest
+#LABEL maintainer="firefly.lzh@gmail.com"
+#
+#RUN apk add --no-cache --virtual subconverter-deps pcre2 libcurl yaml-cpp
+#
+#COPY --from=builder /subconverter/subconverter /usr/bin/
+#COPY base/ /base/
 
 # set entry
 WORKDIR /base
