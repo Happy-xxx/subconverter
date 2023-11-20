@@ -568,7 +568,7 @@ test-timeout = 5
     "servers": [
       {
         "tag": "dns_proxy",
-        "address": "tls://cloudflare-dns.com/dns-query",
+        "address": "tls://1.1.1.1",
         "address_resolver": "dns_resolver"
       },
       {
