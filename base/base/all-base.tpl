@@ -559,11 +559,7 @@ test-timeout = 5
 {% if request.target == "singbox" %}
 
 {
-  "log": {
-      "disabled": false,
-      "level": "info",
-      "timestamp": true
-  },
+  "log": { "disabled": false, "level": "info", "timestamp": true },
   "dns": {
     "servers": [
       {
@@ -577,34 +573,18 @@ test-timeout = 5
         "address_resolver": "dns_resolver",
         "detour": "DIRECT"
       },
-      {
-        "tag": "dns_fakeip",
-        "address": "fakeip"
-      },
-      {
-        "tag": "dns_resolver",
-        "address": "223.5.5.5",
-        "detour": "DIRECT"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
+      { "tag": "dns_fakeip", "address": "fakeip" },
+      { "tag": "dns_resolver", "address": "223.5.5.5", "detour": "DIRECT" },
+      { "tag": "block", "address": "rcode://success" }
     ],
     "rules": [
-      {
-        "outbound": ["any"],
-        "server": "dns_resolver"
-      },
+      { "outbound": ["any"], "server": "dns_resolver" },
       {
         "geosite": ["geolocation-!cn"],
         "query_type": ["A", "AAAA"],
         "server": "dns_fakeip"
       },
-      {
-        "geosite": ["geolocation-!cn"],
-        "server": "dns_proxy"
-      }
+      { "geosite": ["geolocation-!cn"], "server": "dns_proxy" }
     ],
     "final": "dns_direct",
     "independent_cache": true,
