@@ -49,10 +49,11 @@ dns:
   ipv6: true
 {% endif %}
 {% if request.clash.dns == "meta-tun" %}
-find-process-mode: strict
-global-client-fingerprint: chrome
+find-process-mode: always
 ipv6: true
 tcp-concurrent: true
+global-client-fingerprint: chrome
+keep-alive-interval: 15
 tun:
   enable: true
   stack: system # gvisor / lwip
@@ -69,6 +70,7 @@ tun:
   inet6_route_address:
     - "::/1"
     - "8000::/1"
+  endpoint-independent-nat: false
 #interface-name: WLAN
 sniffer:
   enable: true
@@ -76,6 +78,8 @@ sniffer:
   parse-pure-ip: true
   override-destination: true
   sniff:
+    QUIC:
+      ports: [ 443 ]
     TLS:
       ports: [443, 8443]
     HTTP:
@@ -590,7 +594,9 @@ test-timeout = 5
     "independent_cache": true,
     "fakeip": {
       "enabled": true,
-      "inet6_range": "fc00::/18",
+      {% if default(request.singbox.ipv6, "") == "1" %}
+      "inet6_range": "fc00::\/18",
+      {% endif %}
       "inet4_range": "198.18.0.0/15"
     }
   },
@@ -616,7 +622,9 @@ test-timeout = 5
       "type": "tun",
       "tag": "tun-in",
       "inet4_address": "22.0.0.1/30",
+      {% if default(request.singbox.ipv6, "") == "1" %}
       "inet6_address": "fdfe:dcba:9876::1/126",
+      {% endif %}
       "auto_route": true,
       "strict_route": true,
       "stack": "mixed",
