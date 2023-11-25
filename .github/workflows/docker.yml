@@ -242,7 +242,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v4.1.1
         with:
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
           context: scripts/
           tags: lovinyarn/subconverter:latest
           build-args: |
@@ -262,7 +262,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v4.1.1
         with:
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
           context: scripts/
           tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
           build-args: |
