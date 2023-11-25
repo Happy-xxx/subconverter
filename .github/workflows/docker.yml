@@ -45,7 +45,7 @@ jobs:
         with:
           platforms: linux/amd64
           context: scripts/
-          tags: lovinyarn/subconverter:latest
+          tags: lovinyarn/subconverter:amd64_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
           outputs: type=image,push=true
@@ -109,7 +109,7 @@ jobs:
         with:
           platforms: linux/386
           context: scripts/
-          tags: lovinyarn/subconverter:latest
+          tags: lovinyarn/subconverter:386_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
           outputs: type=image,push=true
@@ -175,7 +175,7 @@ jobs:
         with:
           platforms: linux/arm/v7
           context: scripts/
-          tags: lovinyarn/subconverter:latest
+          tags: lovinyarn/subconverter:armv7_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
             THREADS=4
@@ -244,7 +244,7 @@ jobs:
         with:
           platforms: linux/arm64
           context: scripts/
-          tags: lovinyarn/subconverter:latest
+          tags: lovinyarn/subconverter:arm64_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
             THREADS=4
