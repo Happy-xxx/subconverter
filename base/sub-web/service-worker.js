@@ -11,11 +11,11 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("js/workbox-v4.3.1/workbox-sw.js");
-workbox.setConfig({modulePathPrefix: "js/workbox-v4.3.1"});
+importScripts("/js/workbox-v4.3.1/workbox-sw.js");
+workbox.setConfig({modulePathPrefix: "/js/workbox-v4.3.1"});
 
 importScripts(
-  "js/precache-manifest.7bf774f7ca484f750d049ca3c2d1ff9d.js"
+  "/js/precache-manifest.c2f5ba37d93d4a9bbd793c59a0b61378.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "sub-web"});
