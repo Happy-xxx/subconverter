@@ -567,14 +567,6 @@ test-timeout = 5
   "dns": {
     "servers": [
       {
-        "tag": "remote",
-        "address": "https://cloudflare-dns.com/dns-query",
-        "address_resolver": "dns_resolver",
-        "address_strategy": "prefer_ipv4",
-        "strategy": "prefer_ipv4",
-        "detour": "select"
-      },
-      {
         "tag": "local",
         "address": "https://dns.alidns.com/dns-query",
         "address_resolver": "dns_resolver",
@@ -582,16 +574,34 @@ test-timeout = 5
         "strategy": "prefer_ipv4",
         "detour": "DIRECT"
       },
+      {
+        "tag": "remote",
+        "address": "tls://1.1.1.1",
+        "address_strategy": "prefer_ipv4",
+        "strategy": "prefer_ipv4"
+      },
       { "tag": "fakeip", "address": "fakeip" },
       { "tag": "dns_resolver", "address": "223.5.5.5", "detour": "DIRECT" },
       { "tag": "block", "address": "rcode://success" }
     ],
     "rules": [
-      { "outbound": ["any"], "server": "local" },
-      { "query_type": ["A", "AAAA"], "rewrite_ttl": 1, "server": "fakeip" },
-      { "clash_mode": "global", "server": "remote" },
-      { "clash_mode": "direct", "server": "local" },
-      { "geosite": ["geolocation-!cn"], "server": "remote" }
+      { "outbound": ["any"], "server": "dns_resolver" },
+      { "geosite": ["geolocation-!cn"], "server": "remote" },
+      {
+        "inbound": ["tun-in"],
+        "query_type": ["A", "AAAA"],
+        "network": "tcp",
+        "protocol": ["tls", "http", "quic"],
+        "port": [80, 443],
+        "clash_mode": "Rule",
+        "invert": false,
+        "outbound": ["any"],
+        "server": "fakeip",
+        "disable_cache": false,
+        "rewrite_ttl": 100
+      },
+      { "clash_mode": "Global", "server": "remote" },
+      { "clash_mode": "Direct", "server": "local" }
     ],
     "strategy": "prefer_ipv4",
     "independent_cache": true,
@@ -600,7 +610,7 @@ test-timeout = 5
       {% if default(request.singbox.ipv6, "") == "1" %}
       "inet6_range": "fc00::\/18",
       {% endif %}
-      "inet4_range": "198.18.0.0/15"
+      "inet4_range": "28.0.0.0\/8"
     }
   },
   "ntp": {
@@ -651,7 +661,7 @@ test-timeout = 5
     "clash_api": {
       "external_controller": "0.0.0.0:19090",
       "secret": "",
-      "default_mode": "rule",
+      "default_mode": "Rule",
       "store_mode": true,
       "store_selected": true,
       "store_fakeip": true
