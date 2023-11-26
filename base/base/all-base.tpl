@@ -567,34 +567,33 @@ test-timeout = 5
   "dns": {
     "servers": [
       {
-        "tag": "dns_proxy",
+        "tag": "remote",
         "address": "https://cloudflare-dns.com/dns-query",
         "address_resolver": "dns_resolver",
         "address_strategy": "prefer_ipv4",
-        "strategy": "prefer_ipv4"
+        "strategy": "prefer_ipv4",
+        "detour": "select"
       },
       {
-        "tag": "dns_direct",
+        "tag": "local",
         "address": "https://dns.alidns.com/dns-query",
         "address_resolver": "dns_resolver",
         "address_strategy": "prefer_ipv4",
         "strategy": "prefer_ipv4",
         "detour": "DIRECT"
       },
-      { "tag": "dns_fakeip", "address": "fakeip" },
+      { "tag": "fakeip", "address": "fakeip" },
       { "tag": "dns_resolver", "address": "223.5.5.5", "detour": "DIRECT" },
       { "tag": "block", "address": "rcode://success" }
     ],
     "rules": [
-      { "outbound": ["any"], "server": "dns_resolver" },
-      {
-        "geosite": ["geolocation-!cn"],
-        "query_type": ["A", "AAAA"],
-        "server": "dns_fakeip"
-      },
-      { "geosite": ["geolocation-!cn"], "server": "dns_proxy" }
+      { "outbound": ["any"], "server": "local" },
+      { "query_type": ["A", "AAAA"], "rewrite_ttl": 1, "server": "fakeip" },
+      { "clash_mode": "global", "server": "remote" },
+      { "clash_mode": "direct", "server": "local" },
+      { "geosite": ["geolocation-!cn"], "server": "remote" }
     ],
-    "final": "dns_direct",
+    "strategy": "prefer_ipv4",
     "independent_cache": true,
     "fakeip": {
       "enabled": true,
@@ -615,6 +614,8 @@ test-timeout = 5
     {
       "type": "mixed",
       "tag": "mixed-in",
+      "domain_strategy": "prefer_ipv4",
+      "set_system_proxy": true,
       {% if bool(default(global.singbox.allow_lan, "")) %}
       "listen": "0.0.0.0",
       {% else %}
@@ -633,14 +634,7 @@ test-timeout = 5
       "mtu": 9000,
       "auto_route": true,
       "strict_route": true,
-      "inet4_route_address": [
-        "0.0.0.0/1",
-        "128.0.0.0/1"
-      ],
-      "inet6_route_address": [
-        "::/1",
-        "8000::/1"
-      ],
+      "domain_strategy": "prefer_ipv4",
       "endpoint_independent_nat": false,
       "stack": "mixed",
       "sniff": true,
