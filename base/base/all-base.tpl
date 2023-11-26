@@ -568,13 +568,17 @@ test-timeout = 5
     "servers": [
       {
         "tag": "dns_proxy",
-        "address": "tls://1.1.1.1",
-        "address_resolver": "dns_resolver"
+        "address": "https://cloudflare-dns.com/dns-query",
+        "address_resolver": "dns_resolver",
+        "address_strategy": "prefer_ipv4",
+        "strategy": "prefer_ipv4"
       },
       {
         "tag": "dns_direct",
-        "address": "h3://dns.alidns.com/dns-query",
+        "address": "https://dns.alidns.com/dns-query",
         "address_resolver": "dns_resolver",
+        "address_strategy": "prefer_ipv4",
+        "strategy": "prefer_ipv4",
         "detour": "DIRECT"
       },
       { "tag": "dns_fakeip", "address": "fakeip" },
@@ -617,26 +621,49 @@ test-timeout = 5
       "listen": "127.0.0.1",
       {% endif %}
       "listen_port": {{ default(global.singbox.mixed_port, "2080") }}
-      },
+    },
     {
       "type": "tun",
       "tag": "tun-in",
+      "interface_name": "tun0",
       "inet4_address": "22.0.0.1/30",
       {% if default(request.singbox.ipv6, "") == "1" %}
       "inet6_address": "fdfe:dcba:9876::1/126",
       {% endif %}
+      "mtu": 9000,
       "auto_route": true,
       "strict_route": true,
+      "inet4_route_address": [
+        "0.0.0.0/1",
+        "128.0.0.0/1"
+      ],
+      "inet6_route_address": [
+        "::/1",
+        "8000::/1"
+      ],
+      "endpoint_independent_nat": false,
       "stack": "mixed",
-      "sniff": true
+      "sniff": true,
+      "sniff_override_destination": true,
+      "sniff_timeout": "300ms"
     }
   ],
   "outbounds": [],
   "route": {
     "rules": [],
-    "auto_detect_interface": true
+    "auto_detect_interface": true,
+    "override_android_vpn": true
   },
-  "experimental": {}
+  "experimental": {
+    "clash_api": {
+      "external_controller": "0.0.0.0:19090",
+      "secret": "",
+      "default_mode": "rule",
+      "store_mode": true,
+      "store_selected": true,
+      "store_fakeip": true
+    }
+  }
 }
 
 {% endif %}
