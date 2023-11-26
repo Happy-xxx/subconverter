@@ -612,18 +612,6 @@ test-timeout = 5
   },
   "inbounds": [
     {
-      "type": "mixed",
-      "tag": "mixed-in",
-      "domain_strategy": "prefer_ipv4",
-      "set_system_proxy": true,
-      {% if bool(default(global.singbox.allow_lan, "")) %}
-      "listen": "0.0.0.0",
-      {% else %}
-      "listen": "127.0.0.1",
-      {% endif %}
-      "listen_port": {{ default(global.singbox.mixed_port, "2080") }}
-    },
-    {
       "type": "tun",
       "tag": "tun-in",
       "interface_name": "tun0",
@@ -640,6 +628,17 @@ test-timeout = 5
       "sniff": true,
       "sniff_override_destination": true,
       "sniff_timeout": "300ms"
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "domain_strategy": "prefer_ipv4",
+      {% if bool(default(global.singbox.allow_lan, "")) %}
+      "listen": "0.0.0.0",
+      {% else %}
+      "listen": "127.0.0.1",
+      {% endif %}
+      "listen_port": {{ default(global.singbox.mixed_port, "2080") }}
     }
   ],
   "outbounds": [],
