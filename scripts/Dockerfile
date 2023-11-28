@@ -1,6 +1,6 @@
 FROM alpine:3.18
 # FROM fireflylzh/subconverter:latest
-LABEL maintainer="firefly.lzh@gmail.com"
+LABEL maintainer="juanshengyuan@gmail.com"
 # ADD https://github.com/xuanranran/subconverter/commits/main.atom cache_bust
 ARG THREADS="4"
 # ARG SHA=""
