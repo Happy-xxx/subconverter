@@ -76,6 +76,18 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{env.GIT_TOKEN}}
+      - name: Delete workflow runs
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{env.GIT_TOKEN}}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: 'subconverter',
+            workflow_id: 'Delete workflow runs.yml',
+            ref: 'main',
+            });
       - name: Github CI
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/github-script@v7.0.1
