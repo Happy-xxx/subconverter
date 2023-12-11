@@ -13,12 +13,26 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+env:
+  REPO_URL: https://github.com/xuanranran/subconverter
+  REPO_BRANCH: main
+  KMODS_IN_FIRMWARE: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
     env:
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
     outputs:
+      ui-version: ${{ steps.web.outputs.ui-ver }}
+      OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
+      PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
+      TARGET: ${{ steps.compile.outputs.TARGET }}
+      SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
+      FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
+      GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
       changed: ${{steps.build_changelog.outputs.changelog}}
       ver: ${{ steps.set-ver.outputs.version }}
     steps:
@@ -33,6 +47,19 @@ jobs:
       - id: set-ver
         run: |
           echo "version=$(date +%y.%m%d.%H%M-)$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+            retain_days: 0
+            keep_minimum_runs: 1
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        with:
+            keep_latest: 1
+            delete_tags: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build CHANGELOG
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v3.7.2
