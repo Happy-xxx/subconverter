@@ -10,6 +10,7 @@ payload:
   - DOMAIN-SUFFIX,116cd.net
   - DOMAIN-SUFFIX,anxia.com
   - DOMAIN-SUFFIX,sq.cc
+  - DOMAIN,fhnfile.oss-cn-shenzhen.aliyuncs.com
   ## > 12306
   - DOMAIN-SUFFIX,12306.cn
   - DOMAIN-SUFFIX,95306.cn
@@ -2062,6 +2063,7 @@ payload:
   - DOMAIN-SUFFIX,edgefn.net
   - DOMAIN-SUFFIX,fnedge.net
   - DOMAIN-SUFFIX,ldgslb.com
+  - DOMAIN-SUFFIX,saxysec.com
   - DOMAIN-SUFFIX,scdncloud.com
   - DOMAIN-SUFFIX,scdntop.com
   - DOMAIN-SUFFIX,solocdn.cn
@@ -5570,6 +5572,7 @@ payload:
   - DOMAIN-SUFFIX,wsoso.com
   ## > 蓝奏云
   - DOMAIN-SUFFIX,baidupan.com
+  - DOMAIN-SUFFIX,lanrar.com
   - DOMAIN-SUFFIX,lanzou.com
   - DOMAIN-SUFFIX,lanzoub.com
   - DOMAIN-SUFFIX,lanzouc.com
@@ -5593,6 +5596,7 @@ payload:
   - DOMAIN-SUFFIX,lanzoux.com
   - DOMAIN-SUFFIX,lanzouy.com
   - DOMAIN-SUFFIX,woozooo.com
+  - DOMAIN-SUFFIX,wwentua.com
   ## > 乐播投屏
   - DOMAIN-SUFFIX,hpplay.cn
   - DOMAIN-SUFFIX,hpplay.com.cn
@@ -6200,6 +6204,7 @@ payload:
   - DOMAIN-SUFFIX,qiniutek.com
   - DOMAIN-SUFFIX,qnfcdn.com
   - DOMAIN-SUFFIX,qnlinking.com
+  - DOMAIN-SUFFIX,qnqcdn.net
   - DOMAIN-SUFFIX,qnsdk.com
   - DOMAIN-SUFFIX,qnssl.com
   - DOMAIN-SUFFIX,qnydns.com
@@ -6479,7 +6484,9 @@ payload:
   - DOMAIN-SUFFIX,xiaog.xyz
   ## >> 阿里云盘
   - DOMAIN-SUFFIX,alicloudccp.com
+  - DOMAIN-SUFFIX,alipan.com
   - DOMAIN-SUFFIX,aliyundrive.com
+  - DOMAIN-SUFFIX,aliyundrive.net
   - DOMAIN-SUFFIX,aliyunpds.com
   ## >> 红马传媒(大麦网)
   - DOMAIN-SUFFIX,baotoo.com
@@ -8182,6 +8189,8 @@ payload:
   - DOMAIN-SUFFIX,duokanbox.com
   ## >> 小米路由器
   - DOMAIN-SUFFIX,miwifi.com
+  ## >> 小米汽车
+  - DOMAIN-SUFFIX,xiaomiev.com
   ## >> 小米生态云
   - DOMAIN-SUFFIX,mi-ae.cn
   - DOMAIN-SUFFIX,mi-ae.com
@@ -8906,14 +8915,22 @@ payload:
   - DOMAIN-SUFFIX,migu.cn
   - DOMAIN-SUFFIX,12530.com
   # >> 中移互联
+  - DOMAIN-SUFFIX,10086kuaixiu.com
+  - DOMAIN-SUFFIX,117.161.2.5
   - DOMAIN-SUFFIX,andfx.cn
   - DOMAIN-SUFFIX,andfx.net
+  - DOMAIN-SUFFIX,chinamobiledevice.com
+  - DOMAIN-SUFFIX,cmdcl.cn
+  - DOMAIN-SUFFIX,cmdcxls.com
   - DOMAIN-SUFFIX,cmicrwx.cn
   - DOMAIN-SUFFIX,cmpassport.com
+  - DOMAIN-SUFFIX,cxzx10086.cn
   - DOMAIN-SUFFIX,fetion-portal.com
   - DOMAIN-SUFFIX,fetionpic.com
+  - DOMAIN-SUFFIX,fxltsbl.com
   - DOMAIN-SUFFIX,mmarket.com
   - DOMAIN-SUFFIX,mmarket6.com
+  - DOMAIN-SUFFIX,zdsdp.com
   ## > 中国互联网络信息中心
   - DOMAIN-SUFFIX,cfid-lab.cn
   - DOMAIN-SUFFIX,cfidlab.cn
@@ -9005,8 +9022,19 @@ payload:
   - DOMAIN-SUFFIX,ztehotel.com
   - DOMAIN-SUFFIX,ztehotel.com.cn
   - DOMAIN-SUFFIX,ztehotel.net
+  - DOMAIN-SUFFIX,ztemall.com
   - DOMAIN-SUFFIX,ztems.com
   - DOMAIN-SUFFIX,zxingyun.com
+  ## >> 努比亚
+  - DOMAIN-SUFFIX,3gcare.cn
+  - DOMAIN-SUFFIX,nubia.cc
+  - DOMAIN-SUFFIX,nubia.cn
+  - DOMAIN-SUFFIX,nubia.com
+  - DOMAIN-SUFFIX,nubia.com.cn
+  - DOMAIN-SUFFIX,nubia.mobi
+  - DOMAIN-SUFFIX,nubia.net.cn
+  - DOMAIN-SUFFIX,redmagic.com
+  - DOMAIN-SUFFIX,shouhubao.com.cn
   ## > 中元易尚
   - DOMAIN-SUFFIX,bjesound.com
   - DOMAIN-SUFFIX,earlymen.com.cn
@@ -9126,7 +9154,9 @@ payload:
   - DOMAIN-SUFFIX,dongchedi.com
   - DOMAIN-SUFFIX,dongchediapp.com
   ## >> 抖音
+  - DOMAIN-SUFFIX,bdxiguavod.com
   - DOMAIN-SUFFIX,bytecdn.cn
+  - DOMAIN-SUFFIX,bytecdntp.com
   - DOMAIN-SUFFIX,byted-static.com
   - DOMAIN-SUFFIX,bytedance.com
   - DOMAIN-SUFFIX,bytedance.net
@@ -9163,6 +9193,7 @@ payload:
   - DOMAIN-SUFFIX,idouyinvod.com
   - DOMAIN-SUFFIX,iesdouyin.com
   - DOMAIN-SUFFIX,iesdouyin.net
+  - DOMAIN-SUFFIX,ndcpp.com
   - DOMAIN-SUFFIX,pstatp.com
   - DOMAIN-SUFFIX,snssdk.com
   - DOMAIN-SUFFIX,zijiecdn.com
@@ -9189,7 +9220,14 @@ payload:
   - DOMAIN-SUFFIX,huoshanzhibo.com
   ## >> 番茄小说
   - DOMAIN-SUFFIX,changdunovel.com
+  - DOMAIN-SUFFIX,fqnovel.com
+  - DOMAIN-SUFFIX,fqnovelpic.com
+  - DOMAIN-SUFFIX,fqnovelvod.com
   - DOMAIN-SUFFIX,muyewx.com
+  - DOMAIN-SUFFIX,novelfm.com
+  - DOMAIN-SUFFIX,novelfmpic.com
+  - DOMAIN-SUFFIX,novelfmvod.com
+  - DOMAIN-SUFFIX,qznovelvod.com
   ## >> 飞聊
   - DOMAIN-SUFFIX,feiliao.com
   ## >> 飞书
@@ -9294,6 +9332,7 @@ payload:
   - DOMAIN-SUFFIX,pangolin-dsp-toutiao.com
   - DOMAIN-SUFFIX,pangolin-sdk-toutiao-b.com
   - DOMAIN-SUFFIX,pangolin-sdk-toutiao.com
+  - DOMAIN-SUFFIX,pangolin-sdk-toutiao1.com
   - DOMAIN-SUFFIX,panplayable-toutiao-b.com
   - DOMAIN-SUFFIX,panplayable-toutiao.com
   - DOMAIN-SUFFIX,pglstatp-toutiao-b.com
@@ -9302,6 +9341,7 @@ payload:
   - DOMAIN-SUFFIX,volcdem.com
   - DOMAIN-SUFFIX,volceapplog.com
   - DOMAIN-SUFFIX,volcengine.com
+  - DOMAIN-SUFFIX,volces.com
   - DOMAIN-SUFFIX,volcsirius.com
   ## >> 掘金
   - DOMAIN-SUFFIX,juejin.cn
