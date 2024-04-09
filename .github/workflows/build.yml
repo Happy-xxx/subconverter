@@ -205,10 +205,10 @@ jobs:
           name: ${{ matrix.artifact }}.${{ env.VERSION }}
           path: subconverter/
       - name: Package Release
-        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf ${{ matrix.artifact }}.tar.gz subconverter
-      - name: Prepare Release
   #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
+        run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
+      - name: Prepare Release
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
         with:
           name: Sub+SimpleWeb.${{ env.VERSION }}
@@ -216,7 +216,7 @@ jobs:
           token: ${{env.GIT_TOKEN}}
           draft: false
           prerelease: false
-          files: ${{ matrix.artifact }}.tar.gz
+          files: ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz
   
   windows_build:
     needs: prepare
@@ -276,7 +276,7 @@ jobs:
 #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         run: 7z a ${{ matrix.artifact }}.${{ env.VERSION }}.7z subconverter/
       - name: Prepare Release
-#        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
         with:
           name: Sub+SimpleWeb.${{ env.VERSION }}
