@@ -206,7 +206,7 @@ jobs:
           path: subconverter/
       - name: Package Release
         if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
+        run: tar czf ${{ matrix.artifact }}.tar.gz subconverter
       - name: Prepare Release
   #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
@@ -216,7 +216,7 @@ jobs:
           token: ${{env.GIT_TOKEN}}
           draft: false
           prerelease: false
-          files: ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz
+          files: ${{ matrix.artifact }}.tar.gz
   
   windows_build:
     needs: prepare
