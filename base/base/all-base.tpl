@@ -663,15 +663,12 @@ test-timeout = 5
   },
   "experimental": {
     "clash_api": {
-      "external_controller": "0.0.0.0:19090",
-      "secret": "",
-      "default_mode": "Rule"
+        "external_controller": "127.0.0.1:19090",
+        "external_ui": "dashboard"
     },
     "cache_file": {
-      "enabled": true,
-      "path": "",
-      "cache_id": "",
-      "store_fakeip": false
+          "enabled": true,
+          "store_fakeip": true
     }
   }
 }

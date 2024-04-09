@@ -111,242 +111,132 @@ jobs:
         env:
           token: ${{env.GIT_TOKEN}}
 
-  linux32_build:
+  linux_build:
     needs: prepare
-    name: Linux x86 Build
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x86
+            artifact: subconverter_linux32
+            os: ubuntu-latest
+          - arch: amd64
+            artifact: subconverter_linux64
+            os: ubuntu-latest
+          - arch: armv7
+            artifact: subconverter_armv7
+            os: [self-hosted, linux, ARM]
+          - arch: aarch64
+            artifact: subconverter_aarch64
+            os: [self-hosted, linux, ARM64]
+    runs-on: ${{ matrix.os }}
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
       VERSION: ${{ needs.prepare.outputs.ver }}
+    name: Linux ${{ matrix.arch }} Build
     steps:
       - name: Setup timezone
         uses: hoang-rio/set-timezone@v1.4
         with:
           timezoneLinux: "Asia/Shanghai"
-      - uses: actions/checkout@v4
+      - name: Checkout base
+        uses: actions/checkout@v4
       - name: Add commit id into version
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
       - name: Build
-        run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:x86-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
+        run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:${{ matrix.arch }}-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
       - name: Upload
         uses: actions/upload-artifact@v4.3.1
         with:
-          name: subconverter.${{ env.VERSION }}.linux32
+          name: ${{ matrix.artifact }}.${{ env.VERSION }}
           path: subconverter/
       - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf subconverter.${{ env.VERSION }}.linux32.tar.gz subconverter
-      #      - name: Generate Changelog
-      #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
+  #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
+        run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
       - name: Prepare Release
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
           name: Sub+SimpleWeb.${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
           token: ${{env.GIT_TOKEN}}
           draft: false
           prerelease: false
-          files: subconverter.${{ env.VERSION }}.linux32.tar.gz
+          files: ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz
 
-  linux64_build:
-    needs: prepare
-    name: Linux x86_64 Build
-    runs-on: ubuntu-latest
-    env:
-      CHANGE: ${{ needs.prepare.outputs.changed }}
-      GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
-      VERSION: ${{ needs.prepare.outputs.ver }}
-    steps:
-      - name: Setup timezone
-        uses: hoang-rio/set-timezone@v1.4
-        with:
-          timezoneLinux: "Asia/Shanghai"
-      - uses: actions/checkout@v4
-      - name: Add commit id into version
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
-      - name: Build
-        run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:amd64-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
-      - name: Upload
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: subconverter.${{ env.VERSION }}.linux64
-          path: subconverter/
-      - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf subconverter.${{ env.VERSION }}.linux64.tar.gz subconverter
-      #      - name: Generate Changelog
-      #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
-      - name: Prepare Release
-        uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
-          name: Sub+SimpleWeb.${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          token: ${{env.GIT_TOKEN}}
-          draft: false
-          prerelease: false
-          files: subconverter.${{ env.VERSION }}.linux64.tar.gz
-
-  armv7_build:
-    needs: prepare
-    name: Linux armv7 Build
-    runs-on: ubuntu-latest
-    env:
-      CHANGE: ${{ needs.prepare.outputs.changed }}
-      GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
-      VERSION: ${{ needs.prepare.outputs.ver }}
-    steps:
-      - name: Setup timezone
-        uses: hoang-rio/set-timezone@v1.4
-        with:
-          timezoneLinux: "Asia/Shanghai"
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.2.0
-      - name: Add commit id into version
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
-      - name: Build
-        run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:armv7-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
-      - name: Upload
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: subconverter.${{ env.VERSION }}.armv7
-          path: subconverter/
-      - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf subconverter.${{ env.VERSION }}.armv7.tar.gz subconverter
-      #      - name: Generate Changelog
-      #          run: echo ${{ env.CHANGE }} >> CHANGELOG.md
-      - name: Prepare Release
-        uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
-          name: Sub+SimpleWeb.${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          token: ${{env.GIT_TOKEN}}
-          draft: false
-          prerelease: false
-          files: subconverter.${{ env.VERSION }}.armv7.tar.gz
-
-  aarch64_build:
-    needs: prepare
-    name: Linux aarch64 Build
-    runs-on: ubuntu-latest
-    env:
-      CHANGE: ${{ needs.prepare.outputs.changed }}
-      GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
-      VERSION: ${{ needs.prepare.outputs.ver }}
-    steps:
-      - name: Setup timezone
-        uses: hoang-rio/set-timezone@v1.4
-        with:
-          timezoneLinux: "Asia/Shanghai"
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.2.0
-      - name: Add commit id into version
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
-      - name: Build
-        run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:aarch64-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
-      - name: Upload
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: subconverter.${{ env.VERSION }}.aarch64
-          path: subconverter/
-      - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run:
-          tar czf subconverter.${{ env.VERSION }}.aarch64.tar.gz subconverter
-          #      - name: Generate Changelog
-          #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
-      - name: Prepare Release
-        uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
-          name: Sub+SimpleWeb.${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          token: ${{env.GIT_TOKEN}}
-          draft: false
-          prerelease: false
-          files: subconverter.${{ env.VERSION }}.aarch64.tar.gz
 
   macos_build:
     needs: prepare
-    name: macOS Build
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x86
+            artifact: subconverter_darwin64
+            os: macos-13
+          - arch: arm
+            artifact: subconverter_darwinarm
+            os: macos-14
+    runs-on: ${{ matrix.os }}
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
       VERSION: ${{ needs.prepare.outputs.ver }}
+    name: macOS ${{ matrix.arch }} Build
     steps:
       - name: Setup timezone
         uses: hoang-rio/set-timezone@v1.4
         with:
-          timezoneMacos: "Asia/Shanghai"
-      - uses: actions/setup-python@v5.0.0
+          timezoneLinux: "Asia/Shanghai"
+      - name: Checkout base
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - uses: actions/checkout@v4
+          python-version: '3.11'
       - name: Add commit id into version
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: sed -i -e 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
+        run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
       - name: Build
         run: bash scripts/build.macos.release.sh
       - name: Upload
         uses: actions/upload-artifact@v4.3.1
         with:
-          name: subconverter.${{ env.VERSION }}.darwin64
+          name: ${{ matrix.artifact }}.${{ env.VERSION }}
           path: subconverter/
       - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: tar czf subconverter.${{ env.VERSION }}.darwin64.tar.gz subconverter
-      #      - name: Generate Changelog
-      #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
+        run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
       - name: Prepare Release
+  #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
           name: Sub+SimpleWeb.${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
           token: ${{env.GIT_TOKEN}}
           draft: false
           prerelease: false
-          files: subconverter.${{ env.VERSION }}.darwin64.tar.gz
-
-  windows64_build:
+          files: ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz
+  
+  windows_build:
     needs: prepare
-    name: Windows x86_64 Build
+    strategy:
+      matrix:
+        include:
+          - arch: x86
+            artifact: subconverter_win32
+            env: i686
+            msystem: MINGW32
+          - arch: amd64
+            artifact: subconverter_win64
+            env: x86_64
+            msystem: MINGW64
     runs-on: windows-latest
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
       VERSION: ${{ needs.prepare.outputs.ver }}
+    name: Windows ${{ matrix.arch }} Build
     defaults:
       run:
         shell: msys2 {0}
@@ -355,18 +245,22 @@ jobs:
         uses: hoang-rio/set-timezone@v1.4
         with:
           timezoneWindows: "Asia/Shanghai"
-      - uses: actions/setup-python@v5.0.0
+      - name: Checkout base
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4.0.2
+          python-version: '3.11'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: "16"
-      - uses: msys2/setup-msys2@v2
+          node-version: '16'
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: base-devel git mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-pcre2 patch
-          msystem: MINGW64
+          install: base-devel git mingw-w64-${{ matrix.env }}-gcc mingw-w64-${{ matrix.env }}-cmake mingw-w64-${{ matrix.env }}-pcre2 patch
+          msystem: ${{ matrix.msystem }}
           path-type: inherit
       - name: Add commit id into version
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -376,86 +270,21 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4.3.1
         with:
-          name: subconverter.${{ env.VERSION }}.win64
-          path: subconverter\
+          name: ${{ matrix.artifact }}.${{ env.VERSION }}
+          path: subconverter/
       - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: 7z a subconverter.${{ env.VERSION }}.win64.7z subconverter
-      #      - name: Generate Changelog
-      #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
+#        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
+        run: 7z a ${{ matrix.artifact }}.${{ env.VERSION }}.7z subconverter/
       - name: Prepare Release
+#        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
         with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
           name: Sub+SimpleWeb.${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
           token: ${{env.GIT_TOKEN}}
           draft: false
           prerelease: false
-          files: subconverter.${{ env.VERSION }}.win64.7z
-
-  windows32_build:
-    needs: prepare
-    name: Windows x86 Build
-    runs-on: windows-latest
-    env:
-      CHANGE: ${{ needs.prepare.outputs.changed }}
-      GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
-      VERSION: ${{ needs.prepare.outputs.ver }}
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - name: Setup timezone
-        uses: hoang-rio/set-timezone@v1.4
-        with:
-          timezoneWindows: "Asia/Shanghai"
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: "3.11"
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "16"
-      - uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: base-devel git mingw-w64-i686-gcc mingw-w64-i686-cmake mingw-w64-i686-libevent mingw-w64-i686-pcre2 patch
-          msystem: MINGW32
-          path-type: inherit
-      - name: Add commit id into version
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1 '"${{env.VERSION}}"'/' src/version.h
-      - name: Build
-        run: bash scripts/build.windows.release.sh
-      - name: Upload
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: subconverter.${{ env.VERSION }}.win32
-          path: subconverter\
-      - name: Package Release
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        run: 7z a subconverter.${{ env.VERSION }}.win32.7z subconverter
-      #      - name: Generate Changelog
-      #        run: echo ${{ env.CHANGE }} >> CHANGELOG.md
-      - name: Prepare Release
-        uses: softprops/action-gh-release@v2.0.2
-        #        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-        with:
-          #          append_body: true
-          #          body_path: CHANGELOG.md
-          #          body: ${{ env.CHANGE }}
-          #          generate_release_notes: true
-          name: Sub+SimpleWeb.${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          token: ${{env.GIT_TOKEN}}
-          draft: false
-          prerelease: false
-          files: subconverter.${{ env.VERSION }}.win32.7z
+          files: ${{ matrix.artifact }}.${{ env.VERSION }}.7z
 
   prerelease:
     name: Publish build
