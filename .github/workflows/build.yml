@@ -124,10 +124,10 @@ jobs:
             os: ubuntu-latest
           - arch: armv7
             artifact: subconverter_armv7
-            os: [self-hosted, linux, ARM]
+            os: ubuntu-latest
           - arch: aarch64
             artifact: subconverter_aarch64
-            os: [self-hosted, linux, ARM64]
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
