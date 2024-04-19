@@ -11,6 +11,10 @@ match = "(阿尔巴尼亚|Albania)"
 emoji = "🇦🇱"
 
 [[emoji]]
+match = "(南极|Antarctica)"
+emoji = "🇦🇶"
+
+[[emoji]]
 match = "(阿曼苏丹|马斯喀特|Muscat)"
 emoji = "🇴🇲"
 
@@ -45,6 +49,10 @@ emoji = "🇲🇰"
 [[emoji]]
 match = "(波黑共和国|波士尼亚与赫塞哥维纳|Bosnia|Herzegovina)"
 emoji = "🇧🇦"
+
+[[emoji]]
+match = "(梵蒂冈|Vatican)"
+emoji = "🇻🇦"
 
 [[emoji]]
 match = "(格鲁吉亚|Georgia)"
@@ -89,6 +97,10 @@ emoji = "🇲🇳"
 [[emoji]]
 match = "(秘鲁|Peru)"
 emoji = "🇵🇪"
+
+[[emoji]]
+match = "(缅甸|Myanmar)"
+emoji = "🇲🇲"
 
 [[emoji]]
 match = "(墨西哥|Mexico)"
