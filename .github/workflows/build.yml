@@ -129,7 +129,7 @@ jobs:
           outputFile: CHANGELOG.md
           token: ${{ env.GIT_TOKEN }}
       - name: Commit CHANGELOG
-        uses: EndBug/add-and-commit@v9.1.4
+        uses: EndBug/add-and-commit@v9
         with:
           author_email: mail@example.com
           default_author: github_actions
