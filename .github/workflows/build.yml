@@ -53,7 +53,7 @@ jobs:
             retain_days: 0
             keep_minimum_runs: 1
       - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.2.1
+        uses: dev-drprasad/delete-older-releases@v0.3.4
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
             keep_latest: 1
@@ -62,7 +62,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build CHANGELOG
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v5.0.0-a02
+        uses: mikepenz/release-changelog-builder-action@v5.0.0-a03
         with:
           configurationJson: |
             {
@@ -174,7 +174,7 @@ jobs:
     - name: Build
       run: docker run --rm -v $GITHUB_WORKSPACE:/root/workdir multiarch/alpine:${{ matrix.arch }}-latest-stable /bin/sh -c "apk add bash git nodejs npm && cd /root/workdir && chmod +x scripts/build.alpine.release.sh && bash scripts/build.alpine.release.sh"
     - name: Upload
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: ${{ matrix.artifact }}.${{ env.VERSION }}
         path: subconverter/
@@ -183,7 +183,7 @@ jobs:
       run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
     - name: Prepare Release
 #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-      uses: softprops/action-gh-release@v2.0.2
+      uses: softprops/action-gh-release@v2.0.5
       with:
         name: Sub+SimpleWeb.${{ env.VERSION }}
         tag_name: ${{ env.VERSION }}
@@ -227,7 +227,7 @@ jobs:
     - name: Build
       run: bash scripts/build.macos.release.sh
     - name: Upload
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: ${{ matrix.artifact }}.${{ env.VERSION }}
         path: subconverter/
@@ -236,7 +236,7 @@ jobs:
       run: tar czf ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz subconverter
     - name: Prepare Release
 #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-      uses: softprops/action-gh-release@v2.0.2
+      uses: softprops/action-gh-release@v2.0.5
       with:
         name: Sub+SimpleWeb.${{ env.VERSION }}
         tag_name: ${{ env.VERSION }}
@@ -281,7 +281,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4.0.2
       with:
-        node-version: '16'
+        node-version: '20'
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
@@ -295,7 +295,7 @@ jobs:
     - name: Build
       run: bash scripts/build.windows.release.sh
     - name: Upload
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: ${{ matrix.artifact }}.${{ env.VERSION }}
         path: subconverter/
@@ -304,7 +304,7 @@ jobs:
       run: 7z a ${{ matrix.artifact }}.${{ env.VERSION }}.7z subconverter/
     - name: Prepare Release
 #      if: ${{ github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/') }}
-      uses: softprops/action-gh-release@v2.0.2
+      uses: softprops/action-gh-release@v2.0.5
       with:
         name: Sub+SimpleWeb.${{ env.VERSION }}
         tag_name: ${{ env.VERSION }}
@@ -327,7 +327,7 @@ jobs:
         fetch-depth: 0
         token: ${{env.GIT_TOKEN}}
     - name: Complete Publish Release
-      uses: softprops/action-gh-release@v2.0.2
+      uses: softprops/action-gh-release@v2.0.5
       with:
         append_body: true
         body: ${{ env.CHANGE }}
