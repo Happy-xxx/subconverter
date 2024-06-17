@@ -586,13 +586,13 @@ test-timeout = 5
     ],
     "rules": [
       { "outbound": ["any"], "server": "dns_resolver" },
-      { "geosite": ["geolocation-!cn"], "server": "remote" },
       {
         "inbound": ["tun-in"],
-        "query_type": ["A", "AAAA"],
-        "network": "tcp",
+        "query_type": ["A", "AAAA", "HTTPS"],
+        "network": ["tcp", "udp"],
         "protocol": ["tls", "http", "quic"],
         "port": [80, 443],
+        "port_range": ["1000:2000", ":3000", "4000:"],
         "clash_mode": "Rule",
         "invert": false,
         "outbound": ["any"],
@@ -603,8 +603,12 @@ test-timeout = 5
       { "clash_mode": "Global", "server": "remote" },
       { "clash_mode": "Direct", "server": "local" }
     ],
+    "final": "",
     "strategy": "prefer_ipv4",
+    "disable_cache": false,
+    "disable_expire": false,
     "independent_cache": true,
+    "reverse_mapping": true,
     "fakeip": {
       "enabled": true,
       {% if default(request.singbox.ipv6, "") == "1" %}
@@ -659,12 +663,12 @@ test-timeout = 5
   },
   "experimental": {
     "clash_api": {
-      "external_controller": "0.0.0.0:19090",
-      "secret": "",
-      "default_mode": "Rule",
-      "store_mode": true,
-      "store_selected": true,
-      "store_fakeip": true
+        "external_controller": "127.0.0.1:19090",
+        "external_ui": "dashboard"
+    },
+    "cache_file": {
+          "enabled": true,
+          "store_fakeip": true
     }
   }
 }
