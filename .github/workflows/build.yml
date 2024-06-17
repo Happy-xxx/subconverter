@@ -250,10 +250,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: x86
-            artifact: subconverter_win32
-            env: i686
-            msystem: MINGW32
+          # - arch: x86
+            # artifact: subconverter_win32
+            # env: i686
+            # msystem: MINGW32
           - arch: amd64
             artifact: subconverter_win64
             env: x86_64
