@@ -1,13 +1,13 @@
 name: Publish Docker Image
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "**"
-      - "!.github/**"
-      - "!CHANGELOG.md"
+  # push:
+    # branches:
+      # - main
+    # paths:
+      # - "**"
+      # - "!.github/**"
+      # - "!CHANGELOG.md"
   workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
