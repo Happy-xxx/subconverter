@@ -3,11 +3,11 @@ name: Publish GitHub Releases
 on:
   push:
     branches:
-      # - main
+      - main
     paths:
-      # - "**"
-      # - "!.github/**"
-      # - "!CHANGELOG.md"
+      - "**"
+      - "!.github/**"
+      - "!CHANGELOG.md"
   workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
