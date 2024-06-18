@@ -1,6 +1,7 @@
 #!/bin/bash
 set -xe
 
+brew unlink python@2
 brew reinstall rapidjson zlib pcre2 pkgconfig
 
 #git clone https://github.com/curl/curl --depth=1 --branch curl-7_88_1
