@@ -193,7 +193,7 @@ jobs:
         files: ${{ matrix.artifact }}.${{ env.VERSION }}.tar.gz
 
 
-  macos_build:
+  MacOS_build:
     needs: prepare
     strategy:
       matrix:
@@ -204,7 +204,7 @@ jobs:
           - arch: arm
             artifact: subconverter_darwinarm
             os: macos-14
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     env:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
