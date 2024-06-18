@@ -209,7 +209,7 @@ jobs:
       CHANGE: ${{ needs.prepare.outputs.changed }}
       GIT_TOKEN: ${{secrets.ACTIONS_TOKEN}}
       VERSION: ${{ needs.prepare.outputs.ver }}
-    name: macOS ${{ matrix.arch }} Build
+    name: MacOS ${{ matrix.arch }} Build
     steps:
     - name: Setup timezone
       uses: hoang-rio/set-timezone@v1.4
