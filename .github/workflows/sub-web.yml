@@ -56,16 +56,16 @@ jobs:
         run: |
           sudo rm -rf sub-web
           sudo rm -rf base/sub-web
-          git clone --depth=1 https://github.com/xuanranran/subweb sub-web
+          git clone https://github.com/xuanranran/sub-web.git
       - name: Check sub-web commit
         id: web
         run: |
           cd sub-web
           echo "ui-ver=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Use Node.js 18
+      - name: Use Node.js 16
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 16
       - name: Get dependencies and build
         run: |
           cd sub-web
@@ -81,9 +81,9 @@ jobs:
       - name: Update sub-web
         uses: EndBug/add-and-commit@v9
         with:
-          author_email: juanshengyuan@gmail.com
+          author_email: mail@example.com
           default_author: github_actions
-          # message: "Updated submodule sub-web to commit ${{ steps.web.outputs.ui-ver }} 🎉 "
+          message: "Updated submodule sub-web to commit ${{ steps.web.outputs.ui-ver }} 🎉 "
           add: "-A"
         env:
           token: ${{env.GIT_TOKEN}}
