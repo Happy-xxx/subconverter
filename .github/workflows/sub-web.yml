@@ -56,16 +56,16 @@ jobs:
         run: |
           sudo rm -rf sub-web
           sudo rm -rf base/sub-web
-          git clone https://github.com/xuanranran/subweb.git sub-web
+          git clone --depth=1 https://github.com/xuanranran/subweb sub-web
       - name: Check sub-web commit
         id: web
         run: |
           cd sub-web
           echo "ui-ver=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Use Node.js 16
+      - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
       - name: Get dependencies and build
         run: |
           cd sub-web
