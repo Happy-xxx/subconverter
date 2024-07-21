@@ -38,14 +38,14 @@ jobs:
       - id: set-ver
         run: |
           echo "sha_short=$(date +%y.%m%d.%H%M-)$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Build and export
+      - name: Build 和 export
         id: build
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           platforms: linux/amd64
           context: scripts/
-          tags: lovinyarn/subconverter:amd64_latest
+          tags: dongshul/subconverter:amd64_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
           outputs: type=image,push=true
@@ -57,14 +57,14 @@ jobs:
           script: |
             return context.payload.ref.replace(/\/?refs\/tags\/v/, '')
           result-encoding: string
-      - name: Build release and export
+      - name: Build release 和 export
         id: build_rel
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v5
         with:
           platforms: linux/amd64
           context: scripts/
-          tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
+          tags: dongshul/subconverter:${{steps.version.outputs.result}}
           outputs: type=image,push=true
       - name: Save digest
         if: github.ref == 'refs/heads/main'
@@ -102,14 +102,14 @@ jobs:
       - id: set-ver
         run: |
           echo "sha_short=$(date +%y.%m%d.%H%M-)$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Build and export
+      - name: Build 和 export
         id: build
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           platforms: linux/386
           context: scripts/
-          tags: lovinyarn/subconverter:386_latest
+          tags: dongshul/subconverter:386_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
           outputs: type=image,push=true
@@ -121,14 +121,14 @@ jobs:
           script: |
             return context.payload.ref.replace(/\/?refs\/tags\/v/, '')
           result-encoding: string
-      - name: Build release and export
+      - name: Build release 和 export
         id: build_rel
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v5
         with:
           platforms: linux/386
           context: scripts/
-          tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
+          tags: dongshul/subconverter:${{steps.version.outputs.result}}
           outputs: type=image,push=true
       - name: Save digest
         if: github.ref == 'refs/heads/main'
@@ -168,14 +168,14 @@ jobs:
       - id: set-ver
         run: |
           echo "sha_short=$(date +%y.%m%d.%H%M-)$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Build and export
+      - name: Build 和 export
         id: build
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           platforms: linux/arm/v7
           context: scripts/
-          tags: lovinyarn/subconverter:armv7_latest
+          tags: dongshul/subconverter:armv7_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
             THREADS=4
@@ -188,14 +188,14 @@ jobs:
           script: |
             return context.payload.ref.replace(/\/?refs\/tags\/v/, '')
           result-encoding: string
-      - name: Build release and export
+      - name: Build release 和 export
         id: build_rel
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v5
         with:
           platforms: linux/arm/v7
           context: scripts/
-          tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
+          tags: dongshul/subconverter:${{steps.version.outputs.result}}
           build-args: |
             THREADS=4
           outputs: type=image,push=true
@@ -237,14 +237,14 @@ jobs:
       - id: set-ver
         run: |
           echo "sha_short=$(date +%y.%m%d.%H%M-)$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Build and export
+      - name: Build 和 export
         id: build
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           platforms: linux/arm64
           context: scripts/
-          tags: lovinyarn/subconverter:arm64_latest
+          tags: dongshul/subconverter:arm64_latest
           build-args: |
             SHA=${{ steps.set-ver.outputs.sha_short }}
             THREADS=4
@@ -257,14 +257,14 @@ jobs:
           script: |
             return context.payload.ref.replace(/\/?refs\/tags\/v/, '')
           result-encoding: string
-      - name: Build release and export
+      - name: Build release 和 export
         id: build_rel
         if: startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v5
         with:
           platforms: linux/arm64
           context: scripts/
-          tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
+          tags: dongshul/subconverter:${{steps.version.outputs.result}}
           build-args: |
             THREADS=4
           outputs: type=image,push=true
@@ -331,7 +331,7 @@ jobs:
       #        with:
       #          platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/386
       #          context: scripts/
-      #          tags: lovinyarn/subconverter:latest
+      #          tags: dongshul/subconverter:latest
       #          build-args: |
       #            SHA=${{ steps.set-ver.outputs.sha_short }}
       #            THREADS=1
@@ -359,12 +359,12 @@ jobs:
       #        with:
       #          platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/386
       #          context: scripts/
-      #          tags: lovinyarn/subconverter:${{steps.version.outputs.result}}
+      #          tags: dongshul/subconverter:${{steps.version.outputs.result}}
       #          build-args: THREADS=4
       #          outputs: type=image,push=true
-      - name: Merge and push manifest on main branch
+      - name: Merge 和 push manifest on main branch
         if: github.ref == 'refs/heads/main'
         run: python scripts/merge_manifest.py
-      - name: Merge and push manifest on release
+      - name: Merge 和 push manifest on release
         if: startsWith(github.ref, 'refs/tags/')
         run: python scripts/merge_manifest.py ${{steps.version.outputs.result}}
